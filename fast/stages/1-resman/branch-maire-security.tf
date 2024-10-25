@@ -40,8 +40,8 @@ locals {
 
 module "branch-security-folder" {
   source = "../../../modules/folder"
-  parent = local.root_node
-  name   = "Security"
+  parent = module.branch-maire-shared-folder.id
+  name   = "maire-security-fldr"
   iam_by_principals = {
     (local.principals.gcp-security-admins) = [
       # owner and viewer roles are broad and might grant unwanted access

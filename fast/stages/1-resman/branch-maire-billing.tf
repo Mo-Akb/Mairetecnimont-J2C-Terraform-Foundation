@@ -38,6 +38,12 @@ locals {
   )
 }
 
+module "branch-maire-billing-folder" {
+  source = "../../../modules/folder"
+  parent = module.branch-maire-shared-folder.id
+  name   = "maire-billing-fldr"
+}
+
 # billing account in same org (resources is in the organization.tf file)
 
 # standalone billing account

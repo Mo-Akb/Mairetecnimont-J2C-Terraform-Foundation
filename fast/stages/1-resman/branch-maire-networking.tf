@@ -56,9 +56,10 @@ locals {
   )
 }
 
+
 module "branch-network-folder" {
   source = "../../../modules/folder"
-  parent = local.root_node
+  parent = module.branch-maire-shared-folder.id
   name   = "Networking"
   iam_by_principals = {
     (local.principals.gcp-network-admins) = [

@@ -75,6 +75,25 @@ module "branch-pf-prod-sa" {
   }
 }
 
+module "branch-pf-qual-sa" {
+  source       = "../../../modules/iam-service-account"
+  project_id   = var.automation.project_id
+  name         = "qual-resman-pf-0"
+  display_name = "Terraform project factory quality service account."
+  prefix       = var.prefix
+  iam = {
+    # "roles/iam.serviceAccountTokenCreator" = compact([
+    #   try(module.branch-pf-prod-sa-cicd[0].iam_email, null)
+    # ])
+  }
+  iam_project_roles = {
+    (var.automation.project_id) = ["roles/serviceusage.serviceUsageConsumer"]
+  }
+  iam_storage_roles = {
+    (var.automation.outputs_bucket) = ["roles/storage.objectAdmin"]
+  }
+}
+
 # automation read-only service accounts
 
 module "branch-pf-r-sa" {
@@ -134,6 +153,25 @@ module "branch-pf-prod-r-sa" {
   }
 }
 
+module "branch-pf-qual-r-sa" {
+  source       = "../../../modules/iam-service-account"
+  project_id   = var.automation.project_id
+  name         = "qual-resman-pf-0r"
+  display_name = "Terraform project factory quality service account (read-only)."
+  prefix       = var.prefix
+  iam = {
+    # "roles/iam.serviceAccountTokenCreator" = compact([
+    #   try(module.branch-pf-prod-r-sa-cicd[0].iam_email, null)
+    # ])
+  }
+  iam_project_roles = {
+    (var.automation.project_id) = ["roles/serviceusage.serviceUsageConsumer"]
+  }
+  iam_storage_roles = {
+    (var.automation.outputs_bucket) = [var.custom_roles["storage_viewer"]]
+  }
+}
+
 # automation buckets
 
 module "branch-pf-gcs" {
@@ -172,5 +210,18 @@ module "branch-pf-prod-gcs" {
   iam = {
     "roles/storage.objectAdmin"  = [module.branch-pf-prod-sa.iam_email]
     "roles/storage.objectViewer" = [module.branch-pf-prod-r-sa.iam_email]
+  }
+}
+
+module "branch-pf-qual-gcs" {
+  source     = "../../../modules/gcs"
+  project_id = var.automation.project_id
+  name       = "qual-resman-pf-0"
+  prefix     = var.prefix
+  location   = var.locations.gcs
+  versioning = true
+  iam = {
+    "roles/storage.objectAdmin"  = [module.branch-pf-qual-sa.iam_email]
+    "roles/storage.objectViewer" = [module.branch-pf-qual-r-sa.iam_email]
   }
 }

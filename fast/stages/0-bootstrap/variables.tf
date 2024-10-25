@@ -138,6 +138,9 @@ variable "environments" {
     dev = {
       name = "Development"
     }
+    qual = {
+      name = "Quality"
+    }
     prod = {
       name       = "Production"
       is_default = true

@@ -77,6 +77,10 @@ module "organization" {
           iam         = try(local.tags.context.values.security.iam, {})
           description = try(local.tags.context.values.security.description, null)
         }
+        maire = {
+          iam         = try(local.tags.context.values.maire.iam, {})
+          description = try(local.tags.context.values.maire.description, null)
+        }
       }
     }
     (var.tag_names.environment) = {
@@ -102,6 +106,16 @@ module "organization" {
             }
           }
           description = try(local.tags.environment.values.production.description, null)
+        }
+        quality = {
+          iam = try(local.tags.environment.values.quality.iam, {})
+          iam_bindings = {
+            pf = {
+              members = [module.branch-pf-sa.iam_email]
+              role    = "roles/resourcemanager.tagUser"
+            }
+          }
+          description = try(local.tags.environment.values.quality.description, null)
         }
       }
     }

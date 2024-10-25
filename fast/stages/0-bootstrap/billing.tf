@@ -43,7 +43,7 @@ module "billing-export-project" {
   billing_account = var.billing_account.id
   name            = "billing-exp-0"
   parent = coalesce(
-    var.project_parent_ids.billing, "organizations/${var.organization.id}"
+    var.project_parent_ids.billing, "organizations/${var.organization.id}"  # (MO:la fase res mand se billinf è internal si deve aggiungere var.project_parent_ids.billing)
   )
   prefix = local.prefix
   contacts = (
